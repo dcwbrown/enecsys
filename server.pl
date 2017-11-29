@@ -90,7 +90,7 @@ sub decode {
     $Frequency{$Serial},
     $AcVolts{$Serial},
     $Temperature{$Serial},
-    $KilowattHours{$Serial} + 0.001 * $WattHours{$Serial}.
+    $KilowattHours{$Serial} + 0.001 * $WattHours{$Serial},
     $status;
 }
 
