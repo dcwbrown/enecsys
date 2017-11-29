@@ -242,6 +242,7 @@ sub MakeReport {
 sub GetReport {
   ($day) = @_;
   my $today = strftime("%Y-%m-%d", localtime(time));
+  if (!defined($day)) {$day = $today;}
   print "GetReport($day), today = $today.\n";
   my $lfn = "enecsys-$day.log"; # Log file name
   my $rfn = "report-$day.html"; # Report file name
@@ -251,6 +252,3 @@ sub GetReport {
   }
   return $rfn;
 }
-
-
-

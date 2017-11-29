@@ -1,0 +1,4 @@
+#! /bin/sh
+cd /home/dave/collected/enecsys
+/usr/local/bin/perl /home/dave/enecsys/server.pl >/dev/null &
+/usr/local/bin/perl /home/dave/enecsys/html.pl >/dev/null &
