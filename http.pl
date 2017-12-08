@@ -68,6 +68,8 @@ sub ParseLogFile {
       my ($year,$mon,$day,$hr,$min,$sec,$serial,$mA,$W,$eff,$Hz,$ACV,$Deg,$kWh) = ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14);
       my $timeslot = $hr*12 + int($min/5); # Each slot is 5 minutes.
 
+      if ($serial >= 2000000000) {next}   # Serial numbers from 2,000,000,000 do not appear to belong to individual panels 
+
       # Record every wattage read indexed by timeslot
       if (!exists($readings{$serial})) {
         my %panel = ();
@@ -246,9 +248,18 @@ sub GetReport {
   print "GetReport($day), today = $today.\n";
   my $lfn = "enecsys-$day.log"; # Log file name
   my $rfn = "report-$day.html"; # Report file name
-  if (($day eq $today) || !(-f $rfn)) {  # Always regenerate todays report as more sun may have shone
-    if (-f $lfn) {MakeReport($lfn, $rfn);}
-    if (! -f $rfn) {$rfn = undef;}
+
+  if (-f $rfn) {  # Report already exists, check whether it needs regenerating
+    my $modified = strftime("%Y-%m-%d", localtime((stat($rfn))[9]));
+    # There is no need to generate a report if we've already generated one on a later date
+    # than we are reporting for as the exisitng report will cover all figures for that day.
+    if ($modified gt $day) {
+      print "-- not needed, existing report file was generated later: on $modified.\n";
+      return $rfn;
+    }  
   }
+
+  if (-f $lfn) {MakeReport($lfn, $rfn);}
+  if (! -f $rfn) {$rfn = undef;}
   return $rfn;
 }
